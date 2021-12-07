@@ -9,24 +9,24 @@ def stringify(num):
             return "_"
     return str(num)
 
-def is_bingo(sudoku, row, col):
-    return all(sudoku[row]) or all([x[col] for x in sudoku])
+def is_bingo(bingo, row, col):
+    return all(bingo[row]) or all([x[col] for x in bingo])
 
 def main():
     with open(sys.argv[1]) as input_file:
         def str2int(arr):
             return [int(x) for x in arr]
 
-        def print_sudokus(matrix=None):
+        def print_bingos(matrix=None):
             if matrix is None:
-                matrix = sudokus
+                matrix = bingos
             for row in range(len(matrix[0])):
-                print("|", "|\t|".join([' '.join([f'{stringify(n).rjust(2, " ")}' for n in sudoku[row]]) for sudoku in matrix]), "|")
+                print("|", "|\t|".join([' '.join([f'{stringify(n).rjust(2, " ")}' for n in bingo[row]]) for bingo in matrix]), "|")
 
         drawed = str2int(input_file.readline().strip().split(','))
         input_file.readline()
-        sudokus = []
-        sudoku = []
+        bingos = []
+        bingo = []
         markers = []
         marker = []
         num_map = {}
@@ -35,43 +35,43 @@ def main():
         for line in input_file.readlines():
             line = str2int(line.strip().split())
             if not line:
-                markers.append([[False]*len(sudoku) for i in range(len(sudoku))])
-                sudokus.append(sudoku)
-                sudoku = []
+                markers.append([[False]*len(bingo) for i in range(len(bingo))])
+                bingos.append(bingo)
+                bingo = []
                 counter += 1
                 row = 0
                 continue
-            sudoku.append(line)
+            bingo.append(line)
             for col, n in enumerate(line):
                 n_coord = num_map.setdefault(n, [])
                 n_coord.append((counter, row, col))
             row += 1
         print(num_map)
         print(drawed)
-        print_sudokus()
-        print_sudokus(markers)
+        print_bingos()
+        print_bingos(markers)
 
         got_bingo = False
-        playable_sudokus = set(range(len(sudokus)))
+        playable_bingos = set(range(len(bingos)))
         for num in drawed:
             #candidates = num_map[num]
-            #for sudoku in [markers[x[0]] for x in candidates]
+            #for bingo in [markers[x[0]] for x in candidates]
             print(f"  mark {num}")
-            for sudoku_num, row, col in num_map[num]:
-                if sudoku_num not in playable_sudokus:
+            for bingo_num, row, col in num_map[num]:
+                if bingo_num not in playable_bingos:
                     continue
-                print(f"    marking in sudoku {sudoku_num}, {row}x{col}")
-                markers[sudoku_num][row][col] = True
-                if is_bingo(markers[sudoku_num], row, col):
-                    print(f'Bingo in {sudoku_num}')
-                    playable_sudokus.remove(sudoku_num)
-                    if len(playable_sudokus) == 0:
-                        unmarked = sum([sum([c for ci, c in enumerate(r) if not markers[sudoku_num][ri][ci]]) for ri, r in enumerate(sudokus[sudoku_num])])
+                print(f"    marking in bingo {bingo_num}, {row}x{col}")
+                markers[bingo_num][row][col] = True
+                if is_bingo(markers[bingo_num], row, col):
+                    print(f'Bingo in {bingo_num}')
+                    playable_bingos.remove(bingo_num)
+                    if len(playable_bingos) == 0:
+                        unmarked = sum([sum([c for ci, c in enumerate(r) if not markers[bingo_num][ri][ci]]) for ri, r in enumerate(bingos[bingo_num])])
                         got_bingo = True
                         break
             if got_bingo:
                 break
-        print_sudokus(markers)
+        print_bingos(markers)
         print(unmarked, num, unmarked*num)
 
 
