@@ -16,7 +16,7 @@ def main():
     with open(sys.argv[1]) as input_file:
         fishes = [int(x) for x in input_file.readline().strip().split(',')]
         print(fishes)
-        print(sum([calculate_children(x, 80) for x in fishes]))
+        print(sum([calculate_children(x, 256) for x in fishes]))
 
 
 
