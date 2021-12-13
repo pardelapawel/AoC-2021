@@ -4,7 +4,9 @@ from collections import namedtuple
 Point = namedtuple('Point', 'x y')
 
 def print_grid(points, fold_direction=None, edge=None):
-    def draw_point(x, y):
+    def draw_point(x, y, edge=None):
+        if edge is not None:
+            return "|"
         if Point(x, y) in points:
             return "#"
         else:
@@ -19,6 +21,8 @@ def print_grid(points, fold_direction=None, edge=None):
         row = str(y).rjust(2) + " "
         if fold_direction == 'y' and edge == y:
             row += '='*max_x*padding
+        if fold_direction == 'x':
+            row += (' '*(padding-1)).join([draw_point(x, y, edge) for x in range(max_x)])
         else:
             row += (' '*(padding-1)).join([draw_point(x, y) for x in range(max_x)])
         print(row)
@@ -44,8 +48,8 @@ def main():
         max_x = max([x for x, y in points]) + 1
         max_y = max([y for x, y in points]) + 1
         print(max_x, max_y)
-        #print_grid(points)
-        for direction, edge in [folds[0]]:
+        print_grid(points)
+        for direction, edge in folds:
             if direction == 'y':
                 fold_map = dict(zip(range(edge, max_y + 1), range(edge, -1, -1)))
             if direction == 'x':
